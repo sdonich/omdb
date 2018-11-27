@@ -1,11 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
-function public(req, res) {
+function public(contentType, req, res) {
   const filepath = req.url.slice(1);
-  const stream = fs.createReadStream(path.resolve('public', filepath));
 
-  stream.pipe(res);
+  fs.readFile(path.resolve('public', filepath), (error, html) => {
+    if (error) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('error');
+    } else {
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(html);
+    }
+  });
 }
 
 module.exports = public;

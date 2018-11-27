@@ -4,17 +4,27 @@ const public = require('./routes/public');
 const search = require('./routes/search');
 
 http.createServer((req, res) => {
+  let contentType;
+  
+  if (req.url.endsWith('.png')) {
+    contentType = 'image/png';
+
+  } else if (req.url.endsWith('.css')) {
+    contentType = 'text/css';
+
+  } else {
+    contentType = 'text/html';
+    
+  }
 
   if (req.url === '/') {
     home(res);
 
-  } else if (req.url.endsWith('.png') || req.url.endsWith('.css')) {
-    public(req, res);
-
-  } else if (req.url.search(/search/i) !== -1) {
+  } else if (req.url.search(/search/) !== -1) {
     search(res);
 
   } else {
+    public(contentType, req, res);
 
   }
 
