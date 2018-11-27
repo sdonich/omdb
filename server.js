@@ -21,7 +21,7 @@ http.createServer((req, res) => {
     home(res);
 
   } else if (req.url.search(/search/) !== -1) {
-    search(res);
+    search(req, res);
 
   } else {
     public(contentType, req, res);
