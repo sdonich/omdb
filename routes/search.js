@@ -3,17 +3,16 @@ const path = require('path');
 const omdb = require('.././lib/omdb');
 const render = require('.././lib/render');
 
-
 function search(req, res) {
-  const stream = fs.createReadStream(path.resolve('public', 'movie.html'));
 
-  omdb(req, (movie) => {
-    console.log(movie);
-    // render(movie);
+  fs.readFile(path.resolve('public', 'movie.html'), 'utf-8', (error, temlate) => {
+    omdb(req, (movie) => {
+      render(movie, temlate, (html) => {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(html);
+      });
+    });
   });
-
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  stream.pipe(res);
 }
 
 module.exports = search;

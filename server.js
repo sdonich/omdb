@@ -9,6 +9,9 @@ http.createServer((req, res) => {
   if (req.url.endsWith('.png')) {
     contentType = 'image/png';
 
+  } else if (req.url.endsWith('.jpg')) {
+    contentType = 'image/jpeg';
+
   } else if (req.url.endsWith('.css')) {
     contentType = 'text/css';
 
