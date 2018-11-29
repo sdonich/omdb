@@ -1,7 +1,5 @@
 const http = require('http');
-const home = require('./routes/home');
-const public = require('./routes/public');
-const search = require('./routes/search');
+const [home, public, search] = require('./routes/index');
 
 http.createServer((req, res) => {
   let contentType;
