@@ -1,26 +1,33 @@
-const fs = require('fs');
-const path = require('path');
 const omdb = require('.././lib/omdb');
 const render = require('.././lib/render');
-const notFound = require('./not_found');
+const url = require('url');
 
 function search(req, res) {
+  const title = url.parse(req.url, true).query.title;
 
-  fs.readFile(path.resolve('templates', 'movie.html'), 'utf-8', (error, temlate) => {
+  omdb(title, (error, movie) => {
     if (error) {
-      res.writeHead(500, { 'Content-Type': 'text/html' });
-      return res.end('We have some trable on our server');
-    }
-
-    omdb(req, (error, movie) => {
-      if (error) {
-        return notFound(res);
-      }
-
-      render(movie, temlate, (html) => {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+      return render('error.html', { error: error.message }, (error, html) => {
+        if (error) {
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+          return res.end(error.message);
+        }
+  
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/html');
         res.end(html);
       });
+    }
+
+    render('movie.html', movie, (error, html) => {
+      if (error) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        return res.end(error.message);
+      }
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/html');
+      res.end(html);
     });
   });
 }

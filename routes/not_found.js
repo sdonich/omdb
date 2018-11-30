@@ -1,16 +1,15 @@
-const fs = require('fs');
-const path = require('path');
+const render = require('.././lib/render');
 
 function notFound(res) {
-
-  fs.readFile(path.resolve('templates', 'error.html'), 'utf-8', (error, temlate) => {
+  render('error.html', { Error: 'Not found' }, (error, html) => {
     if (error) {
-      res.writeHead(500, { 'Content-Type': 'text/html' });
-      return res.end('We have some trable on our server');
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      return res.end(error.message);
     }
 
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(temlate);
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.end(html);
   });
 }
 
